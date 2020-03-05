@@ -7,7 +7,6 @@ class Monster:
         self.health = health
         self.loot = loot
     
-
     def add_loot(self, item):
         self.loot.append(item)
 
@@ -65,6 +64,70 @@ def check_health(player_health):
     if player_health > 0:
         return False
 
+def loot_monster(slain):
+    if slain.health <= 0:
+        print("The Monster has been defeated!\nCollect your loot hero!")
+        print("The Monster has dropped a " + str(slain.loot) + "\nClaim your prize victor!")
+
+    else:
+        print(user.name + " has died\nThe battle is now over")
+
+def get_monster_move(monst):
+    if monst >= 67:
+        a = random.choice([1, 1, 1, 2, 2, 2, 3])
+    elif 37 < monst < 67:
+        a = random.choice([1, 1, 2, 2, 3, 3])
+    else:
+        a = random.choice([1, 2, 3, 3, 3, 3, 3])
+    return a
+
+def battle(userChar, monsterChar):
+    for x in range(0, 100):
+        if x % 2 == 0:
+            print("*************************************")
+            print("It is now " 
+                + userChar.name
+                + "'s turn.")
+            a = choose_move()
+            if a == '1':
+                monsterChar.health = quick_attack(attack_player=userChar.name,defense_player_health=monsterChar.health)
+                print("The Monster now has " 
+                    + str(monsterChar.health)
+                    + " health.")
+                end_game = check_health(player_health=monsterChar.health)
+                if end_game:
+                    return True
+            if a == '2':
+                monsterChar.health = power_attack(attack_player=userChar.name, defense_player_health=monsterChar.health)
+                print("The Monster now has " 
+                    + str(monsterChar.health)
+                    + " health.")
+                end_game = check_health(player_health=monsterChar.health)
+                if end_game:
+                    return True
+            if a == '3':
+                b = heal(attack_player_health=userChar.health, attack_player=userChar.name)
+                print(userChar.name + " now has " + str(b) + " health.\n")             
+        if x % 2 == 1:
+            print("*************************************")
+            print("It is now the Monster's turn.")
+            a = get_monster_move(monsterChar.health)
+            if a == 1:
+                userChar.health = quick_attack(attack_player="Monster", defense_player_health=userChar.health)
+                print(userChar.name + " now has " + str(userChar.health) + " health.")
+                end_game = check_health(player_health=userChar.health)
+                if end_game:
+                    return True
+            elif a == 2:
+                userChar.health = power_attack(attack_player="Monster", defense_player_health=userChar.health)
+                print(user.name + " now has " + str(userChar.health) + " health.")
+                end_game = check_health(player_health=userChar.health)
+                if end_game:
+                    return True
+            elif a == 3:
+                b = heal(attack_player="Monster", attack_player_health=monsterChar.health)
+                print("The Monster now has " + str(b) + " health.\n")
+
 monster = Monster(kind=random.choice(['Demon', 'Lizard', 'Humanoid', 'Beast']),
                 health=random.choice([100, 105, 95, 100, 90, 110, 100, 90, 95]),
                 loot=random.choice(['Magical Axe', 'Magical Sword', 'Magical Bow']))
@@ -77,57 +140,9 @@ print("Welcome to the Battle Royale between two players:\n" + user.name + " vs. 
 end_game = False
 
 while not end_game:
-    for x in range(0, 100):
-        if x % 2 == 0:
-            print("*************************************")
-            print("It is now " + user.name + "'s turn.")
-            a = choose_move()
-            if a == '1':
-                monster.health = quick_attack(attack_player=user.name, defense_player_health=monster.health)
-                print("The Monster now has " + str(monster.health) + " health.")
-                end_game = check_health(player_health=monster.health)
-                if end_game:
-                    break
-            if a == '2':
-                monster.health = power_attack(attack_player=user.name, defense_player_health=monster.health)
-                print("The Monster now has " + str(monster.health) + " health.")
-                end_game = check_health(player_health=monster.health)
-                if end_game:
-                    break
-            if a == '3':
-                b = heal(attack_player_health=user.health, attack_player=user.name)
-                print(user.name + " now has " + str(b) + " health.\n")
-        if x % 2 == 1:
-            print("*************************************")
-            print("It is now the Monster's turn.")
-            if monster.health >= 67:
-                a = random.choice([1, 1, 1, 2, 2, 2, 3])
-            elif 37 < monster.health < 67:
-                a = random.choice([1, 1, 2, 2, 3, 3])
-            else:
-                a = random.choice([1, 2, 3, 3, 3, 3, 3])
-            if a == 1:
-                user.health = quick_attack(attack_player="Monster", defense_player_health=user.health)
-                print(user.name + " now has " + str(user.health) + " health.")
-                end_game = check_health(player_health=user.health)
-                if end_game:
-                    break
-            if a == 2:
-                user.health = power_attack(attack_player="Monster", defense_player_health=user.health)
-                print(user.name + " now has " + str(user.health) + " health.")
-                end_game = check_health(player_health=user.health)
-                if end_game:
-                    break
-            if a == 3:
-                b = heal(attack_player="Monster", attack_player_health=monster.health)
-                print("The Monster now has " + str(b) + " health.\n")
-
+    end_game = battle(userChar=user, monsterChar=monster)
+    
 print("The battle has now ended")
 
 if end_game is True:
-    if monster.health <= 0:
-        print("The Monster has been defeated!\nCollect your loot hero!")
-        print("The Monster has dropped a " + str(monster.loot) + "\nClaim your prize victor!")
-
-    else:
-        print(user.name + " has died\nThe battle is now over")
+    loot_monster(slain=monster)
