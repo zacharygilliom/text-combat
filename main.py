@@ -128,23 +128,25 @@ def battle(userChar, monsterChar):
                 b = heal(attack_player="Monster", attack_player_health=monsterChar.health)
                 print("The Monster now has " + str(b) + " health.\n")
 
+def get_game_status(status):
+    end_game = status
+    while end_game is False:
+        end_game = battle(userChar=user, monsterChar=monster)
+
+
 if __name__ == "__main__":
 
     monster = Monster(kind=random.choice(['Demon', 'Lizard', 'Humanoid', 'Beast']),
                     health=random.choice([100, 105, 95, 100, 90, 110, 100, 90, 95]),
                     loot=random.choice(['Magical Axe', 'Magical Sword', 'Magical Bow']))
 
-    user = Character(gender='Male', profession='Archer', race='Elf', name='', health=100)
-    user.name = input("Please enter your name\n")
+    user = Character(gender='Male',
+         profession='Archer',
+         race='Elf', 
+         name=input('Please Enter Your Name\n'), 
+         health=100)
 
     print("Welcome to the Battle Royale between two players:\n" + user.name + " vs. The Monster\n")
-
-    end_game = False
-
-    while not end_game:
-        end_game = battle(userChar=user, monsterChar=monster)
-
+    get_game_status(status=False)
     print("The battle has now ended")
-
-    if end_game is True:
-        loot_monster(slain=monster)
+    loot_monster(slain=monster)
