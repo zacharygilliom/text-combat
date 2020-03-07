@@ -1,7 +1,15 @@
 import random
 
+# class Weapon:
+
+#     def __init__(self, att_modifier, def_modifier, weap_type):
+#         self.weap_type = weap_type
+#         self.att_modifier = att_modifier
+#         self.def_modifier = def_modifier
+
 
 class Monster:
+    
     def __init__(self, kind, health, loot):
         self.kind = kind
         self.health = health
@@ -12,19 +20,24 @@ class Monster:
 
 
 class Character:
-    def __init__(self, name, race, profession, gender, health):
+    
+    def __init__(self, name, race, profession, gender, health, equipped=None):
         self.name = name
         self.race = race
         self.profession = profession
         self.gender = gender
         self.items = []
         self.health = health
+        self.equipped = equipped
 
     def add_inventory(self, item):
         self.items.append(item)
 
     def subtract_inventory(self, item):
         self.items.remove(item)
+
+    def equip_item(self, item):
+        self.equipped = item
 
 
 def choose_move():
@@ -71,6 +84,7 @@ def loot_monster(slain):
 
     else:
         print(user.name + " has died\nThe battle is now over")
+    return slain
 
 def get_monster_move(monst):
     if monst >= 67:
@@ -97,7 +111,7 @@ def battle(userChar, monsterChar):
                 end_game = check_health(player_health=monsterChar.health)
                 if end_game:
                     return True
-            if a == '2':
+            elif a == '2':
                 monsterChar.health = power_attack(attack_player=userChar.name, defense_player_health=monsterChar.health)
                 print("The Monster now has " 
                     + str(monsterChar.health)
@@ -105,9 +119,9 @@ def battle(userChar, monsterChar):
                 end_game = check_health(player_health=monsterChar.health)
                 if end_game:
                     return True
-            if a == '3':
-                b = heal(attack_player_health=userChar.health, attack_player=userChar.name)
-                print(userChar.name + " now has " + str(b) + " health.\n")             
+            elif a == '3':
+                userChar.health = heal(attack_player_health=userChar.health, attack_player=userChar.name)
+                print(userChar.name + " now has " + str(userChar.health) + " health.\n")             
         if x % 2 == 1:
             print("*************************************")
             print("It is now the Monster's turn.")
@@ -125,28 +139,42 @@ def battle(userChar, monsterChar):
                 if end_game:
                     return True
             elif a == 3:
-                b = heal(attack_player="Monster", attack_player_health=monsterChar.health)
-                print("The Monster now has " + str(b) + " health.\n")
+                monsterChar.health = heal(attack_player="Monster", attack_player_health=monsterChar.health)
+                print("The Monster now has " + str(monsterChar.health) + " health.\n")
 
 def get_game_status(status):
     end_game = status
     while end_game is False:
         end_game = battle(userChar=user, monsterChar=monster)
 
+def equip_item(userChar, item):
+    userChar.equip_item(item)
+    return userChar.equipped
 
 if __name__ == "__main__":
 
+
     monster = Monster(kind=random.choice(['Demon', 'Lizard', 'Humanoid', 'Beast']),
                     health=random.choice([100, 105, 95, 100, 90, 110, 100, 90, 95]),
-                    loot=random.choice(['Magical Axe', 'Magical Sword', 'Magical Bow']))
+                    loot=random.choice(['Magic Sword', 'Magic Bow'])
+                    )
 
     user = Character(gender='Male',
          profession='Archer',
          race='Elf', 
          name=input('Please Enter Your Name\n'), 
-         health=100)
+         health=100
+         )
 
     print("Welcome to the Battle Royale between two players:\n" + user.name + " vs. The Monster\n")
     get_game_status(status=False)
     print("The battle has now ended")
-    loot_monster(slain=monster)
+    # loot_monster(slain=monster)
+
+    if loot_monster(slain=monster) == monster:
+            user.add_inventory(monster.loot)
+    
+    print("Items in " + str(user.name) + "'s inventory : " +  str(user.items))
+    print(str(user.name) + " has equipped the following item: " + str(equip_item(userChar=user, item=monster.loot)))
+    
+
