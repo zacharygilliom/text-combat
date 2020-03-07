@@ -1,4 +1,5 @@
 import random
+from time import sleep
 
 # class Weapon:
 
@@ -41,14 +42,14 @@ class Character:
 
 
 def choose_move():
-    move = input("Please choose one of the following moves:\n\n 1. Quick Attack. \n 2. Power Attack.\n 3. Heal.\n")
+    move = input("Please choose one of the following moves:\n\n 1. Quick Attack. \n 2. Power Attack.\n 3. Heal.\n*************************************\n")
     return move
 
 
 def quick_attack(attack_player, defense_player_health):
     damage = random.randint(15, 22)
     defense_player_health -= damage
-    print(attack_player + " has dealt " + str(damage) + " damage.\n")
+    print(attack_player + " has dealt " + str(damage) + " damage.")
     return defense_player_health
 
 
@@ -57,10 +58,10 @@ def power_attack(attack_player, defense_player_health):
                             random.randint(25, 35), random.randint(25, 35), random.randint(25, 35),
                             random.randint(25, 35)])
     if damage == 'miss':
-        print(attack_player + " has missed their power attack!\n")
+        print(attack_player + " has missed their power attack!")
     else:
         defense_player_health -= damage
-        print(attack_player + " has dealt " + str(damage) + " damage.\n")
+        print(attack_player + " has dealt " + str(damage) + " damage.")
     return defense_player_health
 
 
@@ -121,7 +122,8 @@ def battle(userChar, monsterChar):
                     return True
             elif a == '3':
                 userChar.health = heal(attack_player_health=userChar.health, attack_player=userChar.name)
-                print(userChar.name + " now has " + str(userChar.health) + " health.\n")             
+                print(userChar.name + " now has " + str(userChar.health) + " health.\n")          
+        sleep(1)   
         if x % 2 == 1:
             print("*************************************")
             print("It is now the Monster's turn.")
@@ -152,7 +154,6 @@ def equip_item(userChar, item):
     return userChar.equipped
 
 if __name__ == "__main__":
-
 
     monster = Monster(kind=random.choice(['Demon', 'Lizard', 'Humanoid', 'Beast']),
                     health=random.choice([100, 105, 95, 100, 90, 110, 100, 90, 95]),
